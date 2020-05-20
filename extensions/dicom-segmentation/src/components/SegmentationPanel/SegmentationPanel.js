@@ -271,11 +271,11 @@ const SegmentationPanel = ({
 
         /* Meta */
         if (hasLabelmapMeta) {
-          const segmentMeta = labelmap3D.metadata.data[segmentIndex];
+          const segmentMeta = labelmap3D.metadata.data.find(segment => segment && segment.SegmentNumber === segmentIndex);
 
           if (segmentMeta) {
             segmentNumber = segmentMeta.SegmentNumber;
-            segmentLabel = segmentMeta.SegmentLabel;
+            segmentLabel = segmentMeta.SegmentDescription;
           }
         }
 
