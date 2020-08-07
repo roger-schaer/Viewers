@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.5](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.8.4...@ohif/extension-cornerstone@2.8.5) (2020-08-05)
+
+**Note:** Version bump only for package @ohif/extension-cornerstone
+
+
+
+
+
+## [2.8.4](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.8.3...@ohif/extension-cornerstone@2.8.4) (2020-07-13)
+
+
+### Bug Fixes
+
+* 🐛 - Put guards in all places that a cornerstone re-render ([#1899](https://github.com/OHIF/Viewers/issues/1899)) ([451f7ea](https://github.com/OHIF/Viewers/commit/451f7eab9258e7a193eb362e0926b13aedc4b3c9))
+
+
+
+
+
+## [2.8.3](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.8.2...@ohif/extension-cornerstone@2.8.3) (2020-07-13)
+
+**Note:** Version bump only for package @ohif/extension-cornerstone
+
+
+
+
+
+## [2.8.2](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.8.1...@ohif/extension-cornerstone@2.8.2) (2020-06-15)
+
+
+### Bug Fixes
+
+* 🐛 Disable seg panel when data for seg unavailable ([#1732](https://github.com/OHIF/Viewers/issues/1732)) ([698e900](https://github.com/OHIF/Viewers/commit/698e900b85121d3c2a46747c443ef69fb7a8c95b)), closes [#1728](https://github.com/OHIF/Viewers/issues/1728)
+
+
+
+
+
+## [2.8.1](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.8.0...@ohif/extension-cornerstone@2.8.1) (2020-06-04)
+
+
+### Bug Fixes
+
+* 🐛 Infinite frame index change when quickly jumping between ([#1734](https://github.com/OHIF/Viewers/issues/1734)) ([a830577](https://github.com/OHIF/Viewers/commit/a8305772d0fbec506549ad7ea08504a8bc3a4f39)), closes [#1733](https://github.com/OHIF/Viewers/issues/1733)
+
+
+
+
+
+# [2.8.0](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.7.3...@ohif/extension-cornerstone@2.8.0) (2020-06-04)
+
+
+### Features
+
+* 🎸 1729 - error boundary wrapper ([#1764](https://github.com/OHIF/Viewers/issues/1764)) ([c02b232](https://github.com/OHIF/Viewers/commit/c02b232b0cc24f38af5d5e3831d987d048e60ada))
+
+
+
+
+
 ## [2.7.3](https://github.com/OHIF/Viewers/compare/@ohif/extension-cornerstone@2.7.2...@ohif/extension-cornerstone@2.7.3) (2020-05-12)
 
 

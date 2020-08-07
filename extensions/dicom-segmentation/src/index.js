@@ -24,7 +24,7 @@ export default {
     return toolbarModule;
   },
   getPanelModule({ commandsManager, api, servicesManager }) {
-    const { UINotificationService } = servicesManager;
+    const { UINotificationService } = servicesManager.services;
 
     const ExtendedSegmentationPanel = props => {
       const { activeContexts } = api.hooks.useAppContext();
@@ -46,7 +46,7 @@ export default {
       const onSegmentVisibilityChangeHandler = (segmentNumber, visible) => {
         commandsManager.runCommand('setSegmentConfiguration', {
           segmentNumber,
-          visible
+          visible,
         });
       };
 
@@ -55,7 +55,7 @@ export default {
           globalOpacity: configuration.fillAlpha,
           outlineThickness: configuration.outlineWidth,
           renderOutline: configuration.renderOutline,
-          visible: configuration.renderFill
+          visible: configuration.renderFill,
         });
       };
 

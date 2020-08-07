@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { metadata, studies, utils, log } from '@ohif/core';
 import usePrevious from '../customHooks/usePrevious';
 
@@ -7,12 +7,12 @@ import PropTypes from 'prop-types';
 import { extensionManager } from './../App.js';
 import { useSnackbarContext } from '@ohif/ui';
 
+// Contexts
+import AppContext from '../context/AppContext';
+
 const { OHIFStudyMetadata, OHIFSeriesMetadata } = metadata;
 const { retrieveStudiesMetadata, deleteStudyMetadataPromise } = studies;
 const { studyMetadataManager, makeCancelable } = utils;
-
-// Contexts
-import AppContext from '../context/AppContext';
 
 const _promoteToFront = (list, value, searchMethod) => {
   let response = [...list];
@@ -105,7 +105,7 @@ const _showUserMessage = (queryParamApplied, message, dialog = {}) => {
     return;
   }
 
-  const { show: showUserMessage = () => { } } = dialog;
+  const { show: showUserMessage = () => {} } = dialog;
   showUserMessage({
     message,
   });
@@ -125,9 +125,14 @@ const _addSeriesToStudy = (studyMetadata, series) => {
 
   studyMetadata.createAndAddDisplaySetsForSeries(
     sopClassHandlerModules,
-    seriesMetadata,
+    seriesMetadata
   );
+
   study.displaySets = studyMetadata.getDisplaySets();
+  study.derivedDisplaySets = studyMetadata.getDerivedDatasets({
+    Modality: series.Modality,
+  });
+
   _updateStudyMetadataManager(study, studyMetadata);
 };
 
@@ -147,6 +152,10 @@ const _updateStudyDisplaySets = (study, studyMetadata) => {
     study.displaySets = studyMetadata.createDisplaySets(sopClassHandlerModules);
   }
 
+  if (study.derivedDisplaySets) {
+    studyMetadata._addDerivedDisplaySets(study.derivedDisplaySets);
+  }
+
   studyMetadata.setDisplaySets(study.displaySets);
 };
 
@@ -154,11 +163,21 @@ const _sortStudyDisplaySet = (study, studyMetadata) => {
   studyMetadata.sortDisplaySets(study.displaySets);
 };
 
+const _thinStudyData = study => {
+  return {
+    StudyInstanceUID: study.StudyInstanceUID,
+    series: study.series.map(item => ({
+      SeriesInstanceUID: item.SeriesInstanceUID,
+    })),
+  };
+};
+
 function ViewerRetrieveStudyData({
   server,
   studyInstanceUIDs,
   seriesInstanceUIDs,
   clearViewportSpecificData,
+  setStudyData,
 }) {
   // hooks
   const [error, setError] = useState(false);
@@ -220,6 +239,7 @@ function ViewerRetrieveStudyData({
     if (Array.isArray(studiesData) && studiesData.length > 0) {
       // Map studies to new format, update metadata manager?
       const studies = studiesData.map(study => {
+        setStudyData(study.StudyInstanceUID, _thinStudyData(study));
         const studyMetadata = new OHIFStudyMetadata(
           study,
           study.StudyInstanceUID
@@ -265,7 +285,8 @@ function ViewerRetrieveStudyData({
       return loadNextSeries();
     };
 
-    const concurrentRequestsAllowed = maxConcurrentMetadataRequests || studyMetadata.getSeriesCount();
+    const concurrentRequestsAllowed =
+      maxConcurrentMetadataRequests || studyMetadata.getSeriesCount();
     const promises = Array(concurrentRequestsAllowed)
       .fill(null)
       .map(loadNextSeries);
@@ -311,7 +332,7 @@ function ViewerRetrieveStudyData({
     }
   };
 
-  const purgeCancellablePromises = () => {
+  const purgeCancellablePromises = useCallback(() => {
     for (let studyInstanceUIDs in cancelableStudiesPromises) {
       if ('cancel' in cancelableStudiesPromises[studyInstanceUIDs]) {
         cancelableStudiesPromises[studyInstanceUIDs].cancel();
@@ -325,7 +346,7 @@ function ViewerRetrieveStudyData({
         studyMetadataManager.remove(studyInstanceUIDs);
       }
     }
-  };
+  });
 
   const prevStudyInstanceUIDs = usePrevious(studyInstanceUIDs);
 
@@ -339,7 +360,7 @@ function ViewerRetrieveStudyData({
       studyMetadataManager.purge();
       purgeCancellablePromises();
     }
-  }, [studyInstanceUIDs]);
+  }, [prevStudyInstanceUIDs, purgeCancellablePromises, studyInstanceUIDs]);
 
   useEffect(() => {
     cancelableSeriesPromises = {};
@@ -369,6 +390,7 @@ ViewerRetrieveStudyData.propTypes = {
   seriesInstanceUIDs: PropTypes.array,
   server: PropTypes.object,
   clearViewportSpecificData: PropTypes.func.isRequired,
+  setStudyData: PropTypes.func.isRequired,
 };
 
 export default ViewerRetrieveStudyData;
